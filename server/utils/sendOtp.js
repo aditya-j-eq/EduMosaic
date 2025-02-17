@@ -1,40 +1,52 @@
-const axios = require("axios");
 const OTP = require("../models/otpModel");
-
-const generateOtp = () =>
-  Math.floor(100000 + Math.random() * 900000).toString();
+const axios = require("axios");
 
 const sendOtp = async (email) => {
-  const otp = generateOtp();
-
-  // Save OTP in database
-  await OTP.create({ email, otp });
-
-  const brevoApiKey = process.env.BREVO_API_KEY;
-  const senderEmail = process.env.SENDER_EMAIL;
-
-  const data = {
-    sender: { email: senderEmail, name: "MERN App" },
-    to: [{ email }],
-    subject: "Your OTP Code",
-    textContent: `Your OTP is: ${otp}. It will expire in 5 minutes.`,
-  };
-
   try {
-    await axios.post("https://api.brevo.com/v3/smtp/email", data, {
-      headers: {
-        "api-key": brevoApiKey,
-        "Content-Type": "application/json",
-      },
-    });
+    const senderEmail = process.env.SENDER_EMAIL;
+    const apiKey = process.env.BREVO_API_KEY;
 
-    return { success: true, message: "OTP sent successfully" };
+    if (!senderEmail || !apiKey) {
+      throw new Error("Missing Brevo API key or sender email.");
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Debug: Print OTP before saving
+    console.log("Generated OTP:", otp);
+
+    // Save OTP in the database
+    const otpEntry = await OTP.findOneAndUpdate(
+      { email },
+      { email, otp, createdAt: new Date() },
+      { upsert: true, new: true }
+    );
+
+    console.log("Stored OTP in DB:", otpEntry);
+
+    const response = await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      {
+        sender: { email: senderEmail },
+        to: [{ email }],
+        subject: "Your OTP Code",
+        htmlContent: `<p>Your OTP is: <strong>${otp}</strong></p>`,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "api-key": apiKey,
+        },
+      }
+    );
+
+    return { success: true };
   } catch (error) {
     console.error(
       "❌ Error sending OTP:",
       error.response?.data || error.message
     );
-    return { success: false, message: "OTP sending failed" };
+    return { success: false, error: error.response?.data || error.message };
   }
 };
 

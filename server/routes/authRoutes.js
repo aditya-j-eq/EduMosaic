@@ -1,10 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const authController = require("../controllers/authController");
+const {
+  initiateSignup,
+  verifyOtp,
+  initiateLogin,
+  verifyLoginOtp,
+} = require("../controllers/authController"); // ✅ Make sure this is the correct path
 
-// Define routes
-router.post("/signup/initiate", authController.initiateSignup);
-router.post("/signup/verify", authController.verifyOtp);
-router.post("/login", authController.login);
+// Routes for Signup
+router.post("/signup", initiateSignup);
+router.post("/verify-otp", verifyOtp);
+
+// Routes for Login
+router.post("/login/send-otp", initiateLogin);
+router.post("/login/verify-otp", verifyLoginOtp);
 
 module.exports = router;
