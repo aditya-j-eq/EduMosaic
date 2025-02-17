@@ -6,10 +6,6 @@ const otpSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now, expires: 300 }, // 5 min expiry
 });
 
-// Debugging Schema Middleware
-otpSchema.pre("save", function (next) {
-  console.log("✅ OTP about to be saved:", this);
-  next();
-});
+
 
 module.exports = mongoose.model("OTP", otpSchema);

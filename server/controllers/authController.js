@@ -24,7 +24,7 @@ exports.initiateSignup = async (req, res) => {
     req.app.locals.tempUser = { name, email, role };
     res.status(200).json({ message: "OTP sent successfully" });
   } catch (error) {
-    console.error("❌ Error in initiateSignup:", error);
+    console.error("Error in initiateSignup:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -56,9 +56,9 @@ exports.verifyOtp = async (req, res) => {
     req.app.locals.tempUser = null;
     await OTP.deleteOne({ email });
 
-    res.status(201).json({ message: "✅ User registered successfully" });
+    res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
-    console.error("❌ Error in verifyOtp:", error);
+    console.error("Error in verifyOtp:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -83,7 +83,7 @@ exports.initiateLogin = async (req, res) => {
 
     res.status(200).json({ message: "OTP sent successfully" });
   } catch (error) {
-    console.error("❌ Error in initiateLogin:", error);
+    console.error("Error in initiateLogin:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -116,7 +116,7 @@ exports.verifyLoginOtp = async (req, res) => {
 
     res.status(200).json({ token, role: user.role });
   } catch (error) {
-    console.error("❌ Error in verifyLoginOtp:", error);
+    console.error("Error in verifyLoginOtp:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

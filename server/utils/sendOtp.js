@@ -29,7 +29,7 @@ const sendOtp = async (email) => {
       {
         sender: { email: senderEmail },
         to: [{ email }],
-        subject: "Your OTP Code",
+        subject: "EduMosaic OTP Code",
         htmlContent: `<p>Your OTP is: <strong>${otp}</strong></p>`,
       },
       {
@@ -43,7 +43,7 @@ const sendOtp = async (email) => {
     return { success: true };
   } catch (error) {
     console.error(
-      "❌ Error sending OTP:",
+      "Error sending OTP:",
       error.response?.data || error.message
     );
     return { success: false, error: error.response?.data || error.message };

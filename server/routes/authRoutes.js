@@ -5,7 +5,7 @@ const {
   verifyOtp,
   initiateLogin,
   verifyLoginOtp,
-} = require("../controllers/authController"); // ✅ Make sure this is the correct path
+} = require("../controllers/authController"); //  Make sure this is the correct path
 
 // Routes for Signup
 router.post("/signup", initiateSignup);
